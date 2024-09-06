@@ -14,74 +14,51 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Variable para recordar el estado del sistema
-bool sistemaParado = false;
+// Estado del Sistema = Partida
+bool SystemOff = false;
 
-void setup()
-{
-  // Pines
+void setup() {
+  // Configuarcion de Pines
   pinMode(13, OUTPUT); // LED 1 - Rojo
   pinMode(12, OUTPUT); // LED 2 - Verde
   pinMode(11, OUTPUT); // LED 3 - V/V 1
   pinMode(10, OUTPUT); // LED 4 - V/V 2
-  pinMode(5, INPUT);  // LDR2 - Maximo
-  pinMode(4, INPUT);  // LDR1 - Minimo
-  pinMode(3, INPUT);  // Pulsador 2 - Partida
-  pinMode(2, INPUT);  // Pulsador 1 - Parada
-
-  // Inicializa LEDs
-  digitalWrite(13, HIGH); // LED rojo encendido al inicio
+  pinMode(5, INPUT); // LDR2 - Maximo
+  pinMode(4, INPUT); // LDR1 - Minimo
+  pinMode(3, INPUT); // Pulsador 2 - Partida
+  pinMode(2, INPUT); // Pulsador 1 - Parada
+  
+  // LED 1 - Rojo = Encendido al Inicio
+  digitalWrite(13, HIGH);
 }
 
-void loop()
-{
-  // Lee el estado de los botones y sensores
-  bool parada = digitalRead(2) == HIGH;
-  bool partida = digitalRead(3) == HIGH;
-  bool ldr1 = digitalRead(4) == LOW;
-  bool ldr2 = digitalRead(5) == LOW;
-
-  if (parada) {
-    // Cuando el Pulsador 1 (Parada) está presionado
-    digitalWrite(10, LOW);  // Apaga LED 4
-    digitalWrite(11, LOW);  // Apaga LED 3
-    digitalWrite(12, LOW);  // Apaga LED verde
-    digitalWrite(13, HIGH); // Enciende LED rojo
-
-    sistemaParado = true; // Establece el estado como "parado"
-  } 
-  else if (partida) {
-    // Cuando el Pulsador 2 (Partida) está presionado
-    digitalWrite(10, LOW);  // Apaga LED 4
-    digitalWrite(11, LOW);  // Apaga LED 3
-    digitalWrite(12, HIGH); // Enciende LED verde
-    digitalWrite(13, LOW);  // Apaga LED rojo
-
-    sistemaParado = false; // Establece el estado como "en marcha"
-  } 
-  else {
-    // Cuando no se presionan los botones
-    if (sistemaParado) {
-      // Si el sistema está en estado "parado", apaga los LEDs 3 y 4
-      digitalWrite(10, LOW);  // Apaga LED 4
-      digitalWrite(11, LOW);  // Apaga LED 3
-    } 
-    else {
-      // Controla los LEDs con las LDRs y asegura que no estén activas al mismo tiempo
-      if (ldr2) {
-        // LDR2 está activo, apaga LDR1
-        digitalWrite(11, LOW);  // Apaga LED 3
-        digitalWrite(10, HIGH); // Enciende LED 4
-      } 
-      else if (ldr1) {
-        // LDR1 está activo, apaga LDR2
-        digitalWrite(10, LOW);  // Apaga LED 4
-        digitalWrite(11, HIGH); // Enciende LED 3
-      } 
-      else {
-        // Ambos LDRs están inactivos
-        digitalWrite(10, LOW);  // Apaga LED 4
-        digitalWrite(11, LOW);  // Apaga LED 3
+void loop() {
+  if (digitalRead(2) == HIGH) {
+    digitalWrite(10, LOW); // Apaga LED 4 - V/V 2
+    digitalWrite(11, LOW); // Apaga LED 3 - V/V 1
+    digitalWrite(12, LOW); // Apaga LED 2 - Verde
+    digitalWrite(13, HIGH); // Enciende LED 1 - Rojo
+    SystemOff = true; // Estado del Sistema = Parado
+  } else if (digitalRead(3) == HIGH) {
+    digitalWrite(10, LOW); // Apaga LED 4 - V/V 2
+    digitalWrite(11, LOW); // Apaga LED 3 - V/V 1
+    digitalWrite(12, HIGH); // Enciende LED 2 - Verde
+    digitalWrite(13, LOW); // Apaga LED 1 - Rojo
+    SystemOff = false; // Estado del Sistema = Partida
+  } else {
+    if (SystemOff) {
+      digitalWrite(10, LOW); // Apaga LED 4 - V/V 2
+      digitalWrite(11, LOW); // Apaga LED 3 - V/V 1
+    } else {
+      if (digitalRead(5) == LOW) {
+        digitalWrite(11, LOW); // Apaga LED 3 - V/V 1
+        digitalWrite(10, HIGH); // Enciende LED 4 - V/V 2
+      } else if (digitalRead(4) == LOW) {
+        digitalWrite(10, LOW); // Apaga LED 4 - V/V 2
+        digitalWrite(11, HIGH); // Enciende LED 3 - V/V 1
+      } else {
+        digitalWrite(10, LOW); // Apaga LED 4 - V/V 2
+        digitalWrite(11, LOW); // Apaga LED 3 - V/V 1
       }
     }
   }
