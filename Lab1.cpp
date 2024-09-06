@@ -8,12 +8,7 @@ void setup() {
   pinMode(12, OUTPUT); // LED 2
   pinMode(11, OUTPUT); // LED 3
   pinMode(10, OUTPUT); // LED 4
-  
-  // LED
-  digitalWrite(13, LOW);
-  digitalWrite(12, LOW);
-  digitalWrite(11, LOW);
-  digitalWrite(10, LOW);
+
 }
 
 void loop() {
@@ -22,25 +17,18 @@ void loop() {
   if (digitalRead(4) == LOW) {
     digitalWrite(11, HIGH);
     digitalWrite(10, LOW);
-  } else if (digitalRead(5) == LOW) {
+  }
+  if (digitalRead(5) == LOW) {
     digitalWrite(11, LOW);
     digitalWrite(10, HIGH);
   }
 
-  // Lectura LDR
-  int valorLDR1 = analogRead(2);
-  int valorLDR2 = analogRead(3);
-
   // LDR
-  if (valorLDR1 < 1000) { // Umbral LDR1
+  if (digitalRead(2) == LOW) {
     digitalWrite(13, HIGH);
-  } else {
-    digitalWrite(13, LOW);
   }
 
-  if (valorLDR2 < 1000) { // Umbral LDR2
+  if (digitalRead(3) == LOW) {
     digitalWrite(12, HIGH);
-  } else {
-    digitalWrite(12, LOW);
   }
 }
